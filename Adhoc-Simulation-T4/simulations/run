@@ -1,0 +1,4 @@
+#!/bin/sh
+cd `dirname $0`
+../src/adhoc_simulation_t4 -n .:../src $*
+# for shared lib, use: opp_run -l ../src/adhoc_simulation_t4 -n .:../src $*
