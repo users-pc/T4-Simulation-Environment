@@ -6,11 +6,11 @@ services:
       dockerfile: Dockerfile
     networks:
       peering_net:
-        ipv4_address: 192.168.17.1
+        ipv4_address: 172.100.1.31
     # ports:
     #   - "5001:5000/tcp"
     command:
-      - "--peers=192.168.17.2:5000"
+      - "--peers=172.100.2.31:5002,172.100.2.31:5003,172.100.2.31:5004"
 
   node-2:
     container_name: node-2
@@ -19,11 +19,11 @@ services:
       dockerfile: Dockerfile
     networks:
       peering_net:
-        ipv4_address: 192.168.17.2
+        ipv4_address: 172.100.1.32
     # ports:
     #   - "5002:5000/tcp"
     command:
-      - "--peers=192.168.17.1:5000,192.168.17.3:5000"
+      - "--peers=172.100.2.32:5001,172.100.2.32:5003,172.100.2.32:5004"
 
   node-3:
     container_name: node-3
@@ -32,17 +32,30 @@ services:
       dockerfile: Dockerfile
     networks:
       peering_net:
-        ipv4_address: 192.168.17.3
+        ipv4_address: 172.100.1.33
     # ports:
     #   - "5003:5000/tcp"
     command:
-      - "--peers=192.168.17.2:5000,"
+      - "--peers=172.100.2.33:5001,172.100.2.33:5002,172.100.2.33:5004"
+
+  node-4:
+    container_name: node-4
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    networks:
+      peering_net:
+        ipv4_address: 172.100.1.34
+    # ports:
+    #   - "5004:5000/tcp"
+    command:
+      - "--peers=172.100.2.34:5001,172.100.2.34:5002,172.100.2.34:5003"
 
 networks:
   peering_net:
     ipam:
       driver: default
       config:
-        - subnet: "192.168.17.0/24"
+        - subnet: "172.100.1.0/24"
   # omnetpp_net:
     # external: true
