@@ -1,0 +1,1337 @@
+file 133002 1765208964                                          
+version 3
+run General-0-20251208-16:48:37-95132
+attr configname General
+attr datetime 20251208-16:48:37
+attr datetimef 20251208-164837
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network MyManet
+attr processid 95132
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../inet-4.5.4/images
+config scheduler-class inet::RealTimeScheduler
+config sim-time-limit 100s
+config network MyManet
+config *.hosts 3
+config *.host[0].numApps 1
+config *.host[0].app[0].typename UdpSinkApp
+config *.host[0].app[0].localPort 5000
+config **.constraintAreaMinX 0m
+config **.constraintAreaMinY 0m
+config **.constraintAreaMinZ 0m
+config **.constraintAreaMaxX 600m
+config **.constraintAreaMaxY 400m
+config **.constraintAreaMaxZ 0m
+config **.host*.ipv4.configurator.typename HostAutoConfigurator
+config **.host*.ipv4.configurator.interfaces "\"wlan0\""
+config **.host*.mobility.typename MassMobility
+config **.host*.mobility.initFromDisplayString false
+config **.host*.mobility.changeInterval "truncnormal(2s, 0.5s)"
+config **.host*.mobility.angleDelta "normal(0deg, 30deg)"
+config **.host*.mobility.speed "truncnormal(20mps, 8mps)"
+config **.host*.mobility.updateInterval 100ms
+config **.host*.numApps 1
+config **.app[0].typename UdpBasicApp
+config **.app[0].destAddresses "\"host[0]\""
+config **.app[0].localPort 9001
+config **.app[0].destPort 9001
+config **.app[0].messageLength 100B
+config **.app[0].startTime "uniform(10s, 30s)"
+config **.app[0].sendInterval "uniform(10s, 30s)"
+config **.wlan[*].bitrate 2Mbps
+config **.wlan[*].mac.dcf.channelAccess.cwMin 7
+config **.wlan[*].radio.transmitter.power 2mW
+config **.wlan[*].radio.receiver.sensitivity -85dBm
+config **.wlan[*].radio.receiver.snirThreshold 4dB
+config **.udpapp.*.vector-recording true
+config **.vector-recording true
+
+vector 0 MyManet.host[0].lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 1 MyManet.host[0].lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 2 MyManet.host[0].lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 3 MyManet.host[0].lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 4 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 5 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 6 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 7 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 8 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 9 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 10 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 11 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 12 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 13 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 14 MyManet.host[0].wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 15 MyManet.host[0].wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 16 MyManet.host[0].wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 17 MyManet.host[0].wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 18 MyManet.host[0].wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 19 MyManet.host[0].wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 20 MyManet.host[0].wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 21 MyManet.host[0].wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 22 MyManet.host[0].wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 23 MyManet.host[0].wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 24 MyManet.host[0].wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 25 MyManet.host[0].wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 26 MyManet.host[0].wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 27 MyManet.host[0].wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 28 MyManet.host[0].wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 29 MyManet.host[0].wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 30 MyManet.host[0].wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 31 MyManet.host[0].wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 32 MyManet.host[0].wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 33 MyManet.host[0].wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 34 MyManet.host[0].wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 35 MyManet.host[0].wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 36 MyManet.host[0].wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 37 MyManet.host[0].wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 38 MyManet.host[0].wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 39 MyManet.host[0].wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 40 MyManet.host[0].wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 41 MyManet.host[0].wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 42 MyManet.host[0].wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 43 MyManet.host[0].wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 44 MyManet.host[0].wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 45 MyManet.host[0].wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 46 MyManet.host[0].wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 47 MyManet.host[0].wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 48 MyManet.host[0].wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 49 MyManet.host[0].wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 50 MyManet.host[0].wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 51 MyManet.host[0].wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 52 MyManet.host[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 53 MyManet.host[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 54 MyManet.host[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 55 MyManet.host[0].wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 56 MyManet.host[0].wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 57 MyManet.host[0].wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 58 MyManet.host[0].ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 59 MyManet.host[0].ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 60 MyManet.host[0].ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 61 MyManet.host[0].ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 62 MyManet.host[0].ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 63 MyManet.host[0].ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 64 MyManet.host[0].ipv4.arp arpRequestSent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpRequestSent
+attr title "ARP request sent, packetBytes"
+vector 65 MyManet.host[0].ipv4.arp arpReplySent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpReplySent
+attr title "ARP replies sent, packetBytes"
+vector 66 MyManet.host[0].udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 67 MyManet.host[0].udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 68 MyManet.host[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 69 MyManet.host[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 70 MyManet.host[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 71 MyManet.host[0].app[0].sink droppedPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropped)
+attr title "dropped packet lengths"
+attr unit b
+vector 72 MyManet.host[0].app[0].sink droppedDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetDropped)
+attr title "dropped data rate"
+attr unit bps
+vector 73 MyManet.host[0].app[0].sink packetLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushed)
+attr title "packet lengths"
+attr unit b
+vector 74 MyManet.host[0].app[0].sink dataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushed)
+attr title "data rate"
+attr unit bps
+vector 75 MyManet.host[0].app[0].sink meanBitLifeTimePerPacket:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source weightedMeanPerGroup(groupRegionsPerPacket(lifeTimePerRegion(packetPushed)))
+attr title "mean bit life time per packet"
+attr unit s
+vector 76 MyManet.host[0].app[0].sink packetJitter:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source jitter(weightedMeanPerGroup(groupRegionsPerPacket(lifeTimePerRegion(packetPushed))))
+attr title "packet jitter"
+attr unit s
+vector 77 MyManet.host[0].app[0].sink packetDelayDifferenceToMean:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source differenceToMean(weightedMeanPerGroup(groupRegionsPerPacket(lifeTimePerRegion(packetPushed))))
+attr title "packet delay difference to mean"
+attr unit s
+vector 78 MyManet.host[0].app[0].sink packetDelayVariation:vector ETV
+attr recordingmode vector
+attr source stddev(weightedMeanPerGroup(groupRegionsPerPacket(lifeTimePerRegion(packetPushed))))
+attr title "packet delay variation"
+attr unit s
+vector 79 MyManet.host[0].app[0].io packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 80 MyManet.host[0].app[0].io packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 81 MyManet.host[1].lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 82 MyManet.host[1].lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 83 MyManet.host[1].lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 84 MyManet.host[1].lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 85 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 86 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 87 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 88 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 89 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 90 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 91 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 92 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 93 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 94 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 95 MyManet.host[1].wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 96 MyManet.host[1].wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 97 MyManet.host[1].wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 98 MyManet.host[1].wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 99 MyManet.host[1].wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 100 MyManet.host[1].wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 101 MyManet.host[1].wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 102 MyManet.host[1].wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 103 MyManet.host[1].wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 104 MyManet.host[1].wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 105 MyManet.host[1].wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 106 MyManet.host[1].wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 107 MyManet.host[1].wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 108 MyManet.host[1].wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 109 MyManet.host[1].wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 110 MyManet.host[1].wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 111 MyManet.host[1].wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 112 MyManet.host[1].wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 113 MyManet.host[1].wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 114 MyManet.host[1].wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 115 MyManet.host[1].wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 116 MyManet.host[1].wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 117 MyManet.host[1].wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 118 MyManet.host[1].wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 119 MyManet.host[1].wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 120 MyManet.host[1].wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 121 MyManet.host[1].wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 122 MyManet.host[1].wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 123 MyManet.host[1].wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 124 MyManet.host[1].wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 125 MyManet.host[1].wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 126 MyManet.host[1].wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 127 MyManet.host[1].wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 128 MyManet.host[1].wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 129 MyManet.host[1].wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 130 MyManet.host[1].wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 131 MyManet.host[1].wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 132 MyManet.host[1].wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 133 MyManet.host[1].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 134 MyManet.host[1].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 135 MyManet.host[1].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 136 MyManet.host[1].wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 137 MyManet.host[1].wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 138 MyManet.host[1].wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 139 MyManet.host[1].ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 140 MyManet.host[1].ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 141 MyManet.host[1].ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 142 MyManet.host[1].ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 143 MyManet.host[1].ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 144 MyManet.host[1].ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 145 MyManet.host[1].ipv4.arp arpRequestSent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpRequestSent
+attr title "ARP request sent, packetBytes"
+vector 146 MyManet.host[1].ipv4.arp arpReplySent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpReplySent
+attr title "ARP replies sent, packetBytes"
+vector 147 MyManet.host[1].udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 148 MyManet.host[1].udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 149 MyManet.host[1].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 150 MyManet.host[1].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 151 MyManet.host[1].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 152 MyManet.host[1].app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 153 MyManet.host[1].app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 154 MyManet.host[1].app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 155 MyManet.host[1].app[0] rcvdPkLifetime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "received packet lifetime"
+attr unit s
+vector 156 MyManet.host[1].app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 157 MyManet.host[2].lo[0].lo rcvdPkFromHl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromUpper
+attr title "packets received from higher layer, packetBytes"
+vector 158 MyManet.host[2].lo[0].lo passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 159 MyManet.host[2].lo[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 160 MyManet.host[2].lo[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 161 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 162 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 163 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 164 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 165 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 166 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 167 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 168 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue droppedPacketLengthsQueueOverflow:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetDropReasonIsQueueOverflow(packetDropped))
+attr title "dropped packet lengths: queue overflow"
+attr unit b
+vector 169 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue flowQueueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(demuxFlow(packetPulled))
+attr title "flow queueing times"
+attr unit s
+vector 170 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue flowIncomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPushStarted)))
+attr title "flow specific incoming data rate"
+attr unit bps
+vector 171 MyManet.host[2].wlan[0].mac.dcf.channelAccess.pendingQueue flowOutgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(flowPacketLength(demuxFlow(packetPulled)))
+attr title "flow specific outgoing data rate"
+attr unit bps
+vector 172 MyManet.host[2].wlan[0].mac.dcf.channelAccess.inProgressFrames queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetDequeued)
+attr title "queueing times"
+vector 173 MyManet.host[2].wlan[0].mac.dcf.channelAccess.inProgressFrames queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(count(packetEnqueued) - count(packetDequeued))"
+attr title "queue length"
+vector 174 MyManet.host[2].wlan[0].mac.dcf.channelAccess.contention backoffPeriodGenerated:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "backoff periods"
+vector 175 MyManet.host[2].wlan[0].mac.dcf.channelAccess.contention backoffActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(backoffStarted)-count(backoffStopped))
+attr title "backoff active"
+vector 176 MyManet.host[2].wlan[0].mac.dcf.channelAccess.contention stateChanged:vector ETV
+attr enum IDLE,DEFER,IFS_AND_BACKOFF
+attr interpolationmode none
+attr recordingmode vector
+attr title "contention state changed"
+attr type enum
+vector 177 MyManet.host[2].wlan[0].mac.dcf.recipientMacDataService packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 178 MyManet.host[2].wlan[0].mac.dcf.recoveryProcedure contentionWindowChanged:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr title "contention window"
+vector 179 MyManet.host[2].wlan[0].mac.dcf packetSentToPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent, packetBytes"
+vector 180 MyManet.host[2].wlan[0].mac.dcf packetSentToPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetSentToPeer)
+attr title "packets sent: unicast, packetBytes"
+vector 181 MyManet.host[2].wlan[0].mac.dcf packetSentToPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetSentToPeer)
+attr title "packets sent: multicast, packetBytes"
+vector 182 MyManet.host[2].wlan[0].mac.dcf packetSentToPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetSentToPeer)
+attr title "packets sent: broadcast , packetBytes"
+vector 183 MyManet.host[2].wlan[0].mac.dcf packetSentToPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetSentToPeer)
+attr title "packets sent: with retry, packetBytes"
+vector 184 MyManet.host[2].wlan[0].mac.dcf packetSentToPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetSentToPeer)
+attr title "packets sent: without retry, packetBytes"
+vector 185 MyManet.host[2].wlan[0].mac.dcf packetReceivedFromPeer:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received, packetBytes"
+vector 186 MyManet.host[2].wlan[0].mac.dcf packetReceivedFromPeerUnicast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Unicast(packetReceivedFromPeer)
+attr title "packets received: unicast, packetBytes"
+vector 187 MyManet.host[2].wlan[0].mac.dcf packetReceivedFromPeerMulticast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Multicast(packetReceivedFromPeer)
+attr title "packets received: multicast, packetBytes"
+vector 188 MyManet.host[2].wlan[0].mac.dcf packetReceivedFromPeerBroadcast:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Broadcast(packetReceivedFromPeer)
+attr title "packets received: broadcast, packetBytes"
+vector 189 MyManet.host[2].wlan[0].mac.dcf packetReceivedFromPeerWithRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211Retry(packetReceivedFromPeer)
+attr title "packets received: with retry, packetBytes"
+vector 190 MyManet.host[2].wlan[0].mac.dcf packetReceivedFromPeerWithoutRetry:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source ieee80211NotRetry(packetReceivedFromPeer)
+attr title "packets received: without retry, packetBytes"
+vector 191 MyManet.host[2].wlan[0].mac.dcf packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 192 MyManet.host[2].wlan[0].mac.dcf packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 193 MyManet.host[2].wlan[0].mac.dcf packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 194 MyManet.host[2].wlan[0].mac.dcf packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 195 MyManet.host[2].wlan[0].mac.dcf frameSequenceActive:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source warmup(count(frameSequenceStarted)-count(frameSequenceFinished))
+attr title "frame sequence active"
+vector 196 MyManet.host[2].wlan[0].mac.dcf datarateSelected:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "datarates selected"
+vector 197 MyManet.host[2].wlan[0].mac.rx nav:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source navChanged
+attr title "network allocation vector"
+vector 198 MyManet.host[2].wlan[0].mac packetSentToUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to upper layer, packetBytes"
+vector 199 MyManet.host[2].wlan[0].mac packetSentToLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets sent to lower layer, packetBytes"
+vector 200 MyManet.host[2].wlan[0].mac packetReceivedFromUpper:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from upper layer, packetBytes"
+vector 201 MyManet.host[2].wlan[0].mac packetReceivedFromLower:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr title "packets received from lower layer, packetBytes"
+vector 202 MyManet.host[2].wlan[0].mac packetDrop:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropped
+attr title "packet drops, packetBytes"
+vector 203 MyManet.host[2].wlan[0].mac packetDropIncorrectlyReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packet drops: incorrectly received, packetBytes"
+vector 204 MyManet.host[2].wlan[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drops: not addressed to us, packetBytes"
+vector 205 MyManet.host[2].wlan[0].mac packetDropQueueOverflow:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsQueueOverflow(packetDropped)
+attr title "packet drops: queue overflow, packetBytes"
+vector 206 MyManet.host[2].wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drops: retry limit reached, packetBytes"
+vector 207 MyManet.host[2].wlan[0].mac packetDropDuplicateDetected:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsDuplicateDetected(packetDropped)
+attr title "packet drops: duplicate detected, packetBytes"
+vector 208 MyManet.host[2].wlan[0].mac packetDropOther:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsOther(packetDropped)
+attr title "packet drops: other, packetBytes"
+vector 209 MyManet.host[2].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 210 MyManet.host[2].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 211 MyManet.host[2].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 212 MyManet.host[2].wlan[0].radio radioChannel:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioChannelChanged
+attr title "Radio channel"
+vector 213 MyManet.host[2].wlan[0] packetDropInterfaceDown:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsInterfaceDown(packetDropped)
+attr title "packet drops: interface down, packetBytes"
+vector 214 MyManet.host[2].wlan[0] packetDropNoCarrier:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoCarrier(packetDropped)
+attr title "packet drops: no carrier, packetBytes"
+vector 215 MyManet.host[2].ipv4.ip packetDropAddressResolutionFailed:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsAddressResolutionFailed(packetDropped)
+attr title "packet drop: address resolution failed, packetBytes"
+vector 216 MyManet.host[2].ipv4.ip packetDropHopLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsHopLimitReached(packetDropped)
+attr title "packet drop: hop limit reached, packetBytes"
+vector 217 MyManet.host[2].ipv4.ip packetDropForwardingDisabled:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsForwardingDisabled(packetDropped)
+attr title "packet drop: forwarding disabled, packetBytes"
+vector 218 MyManet.host[2].ipv4.ip packetDropNoInterfaceFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoInterfaceFound(packetDropped)
+attr title "packet drop: no interface found, packetBytes"
+vector 219 MyManet.host[2].ipv4.ip packetDropNoRouteFound:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNoRouteFound(packetDropped)
+attr title "packet drop: no route found, packetBytes"
+vector 220 MyManet.host[2].ipv4.ip packetDropUndefined:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsUndefined(packetDropped)
+attr title "packet drop: undefined, packetBytes"
+vector 221 MyManet.host[2].ipv4.arp arpRequestSent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpRequestSent
+attr title "ARP request sent, packetBytes"
+vector 222 MyManet.host[2].ipv4.arp arpReplySent:vector(packetBytes) ETV
+attr recordingmode vector(packetBytes)
+attr source arpReplySent
+attr title "ARP replies sent, packetBytes"
+vector 223 MyManet.host[2].udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 224 MyManet.host[2].udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 225 MyManet.host[2].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 226 MyManet.host[2].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 227 MyManet.host[2].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 228 MyManet.host[2].app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 229 MyManet.host[2].app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 230 MyManet.host[2].app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 231 MyManet.host[2].app[0] rcvdPkLifetime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "received packet lifetime"
+attr unit s
+vector 232 MyManet.host[2].app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+4	58585 40 0 0 0 0 5 0 0 0 0
+5	58625 40 0 0 0 0 5 0 0 0 0
+16	58665 18 0 0 0 0 2 0 0 0 0
+18	58683 18 0 0 0 0 2 0 0 0 0
+19	58701 316 0 727 0 20.67172059901 14 0 0 0 0
+21	59017 9 0 0 0 0 1 7 7 7 49
+38	59026 18 0 0 0 0 2 0 0 0 0
+52	59044 27 0 0 0 0 3 0 2 2 4
+53	59071 158 0 727 0 20.67172059901 7 1 2 10 16
+55	59229 9 0 0 0 0 1 0 0 0 0
+68	59238 9 0 0 0 0 1 0 0 0 0
+69	59247 9 0 0 0 0 1 0 0 0 0
+70	59256 9 0 0 0 0 1 0 0 0 0
+85	59265 193 0 717 0 20.571689879207 11 0 1 3 3
+86	59458 199 0 717 0 20.571689879207 11 0 512 1536 786432
+87	59657 113 627 717 18.62725174988 20.571689879207 3 0.000418013322 0.074573491107 0.114416597004 0.0071157182355705
+88	59770 80 624 714 18.62725174988 20.571689879207 3 512 512 1536 786432
+89	59850 2737 624 714 0.1 20.5 205 0 5120 10240 52428800
+90	62587 80 627 717 18.62725174988 20.571689879207 3 512 512 1536 786432
+91	62667 2737 627 717 0.1 20.5 205 0 5120 10240 52428800
+96	65404 113 634 725 18.653126258773 20.671719865885 3 0.009559334548 0.08528088674 0.104399555836 0.0074555913971619
+97	65517 168 0 725 0 20.671719865885 8 0 1 3 3
+98	65685 74 624 714 18.62725174988 20.571689879207 3 0 2 2 4
+99	65759 166 0 716 0 20.571689879207 8 0 1 3 3
+100	65925 958 0 1052 0 29.799847086992 38 0 2 12 24
+102	66883 10 0 0 0 0 1 7 7 7 49
+103	66893 81 634 725 18.653126258773 20.671719865885 3 64 64 192 12288
+105	66974 81 634 725 18.653126258773 20.671719865885 3 64 64 192 12288
+106	67055 81 634 725 18.653126258773 20.671719865885 3 64 64 192 12288
+108	67136 81 634 725 18.653126258773 20.671719865885 3 64 64 192 12288
+119	67217 176 0 725 0 20.671719865885 8 0 1 3 3
+120	67393 96 627 717 18.643566924225 20.586438979145 3 2000000 2000000 6000000 12000000000000
+123	67489 81 627 717 18.643566924225 20.586438979145 3 64 64 192 12288
+124	67570 80 624 714 18.62725174988 20.571689879207 3 36 36 108 3888
+133	67650 185 0 726 0 20.67172059901 9 0 3 17 43
+134	67835 325 0 1052 0 29.799847086992 13 0 2 13 19
+135	68160 311 629 726 18.643566924225 20.67172059901 12 0 2 12 18
+136	68471 10 0 0 0 0 1 0 0 0 0
+139	68481 28 755 755 21.543566924225 21.543566924225 1 128 128 128 16384
+145	68509 81 620 711 18.543566924225 20.543566924225 3 28 28 84 2352
+147	68590 27 618 618 18.52725174988 18.52725174988 1 108 108 108 11664
+149	68617 10 0 0 0 0 1 0 0 0 0
+150	68627 10 0 0 0 0 1 0 0 0 0
+151	68637 10 0 0 0 0 1 0 0 0 0
+154	68647 28 616 616 18.473095935769 18.473095935769 1 100 100 100 10000
+161	68675 362 0 1043 0 29.748730636236 17 0 1 6 6
+162	69037 374 0 1043 0 29.748730636236 17 0 512 3072 1572864
+163	69411 233 504 1043 16.057797488238 29.748730636236 6 0.010379423848 0.050316995693 0.235886930932 0.010725562542052
+164	69644 168 501 1040 16.057797488238 29.748730636236 6 512 512 3072 1572864
+165	69812 4323 501 1040 0.1 29.7 297 0 5120 25600 131072000
+166	74135 168 504 1043 16.057797488238 29.748730636236 6 512 512 3072 1572864
+167	74303 4323 504 1043 0.1 29.7 297 0 5120 25600 131072000
+172	78626 234 511 1050 16.132035947248 29.799846648882 6 0.002181835717 0.013982037204 0.043660668019 0.00042416515295178
+173	78860 333 0 1050 0 29.799846648882 14 0 1 6 6
+174	79193 156 501 1040 16.057797488238 29.748730636236 6 2 7 25 133
+175	79349 332 0 1042 0 29.748730636236 14 0 1 6 6
+176	79681 1276 0 1051 0 29.799847086992 50 0 2 24 48
+178	80957 10 0 0 0 0 1 7 7 7 49
+179	80967 162 511 1050 16.132035947248 29.799846648882 6 64 64 384 24576
+181	81129 162 511 1050 16.132035947248 29.799846648882 6 64 64 384 24576
+182	81291 162 511 1050 16.132035947248 29.799846648882 6 64 64 384 24576
+184	81453 162 511 1050 16.132035947248 29.799846648882 6 64 64 384 24576
+195	81615 333 0 1050 0 29.799846648882 14 0 1 6 6
+196	81948 193 504 1043 16.125517914163 29.785864611678 6 2000000 2000000 12000000 24000000000000
+199	82141 163 504 1043 16.125517914163 29.785864611678 6 64 64 384 24576
+200	82304 162 501 1040 16.057797488238 29.748730636236 6 36 36 216 7776
+209	82466 346 0 1051 0 29.799847086992 15 0 3 32 82
+210	82812 326 0 1051 0 29.799847086992 13 0 1 7 7
+211	83138 628 506 1051 16.125517914163 29.799847086992 24 0 2 24 36
+212	83766 10 0 0 0 0 1 0 0 0 0
+215	83776 57 649 1083 19.025517914163 30.690448185734 2 128 128 256 32768
+221	83833 163 497 1037 16.025517914163 29.690448185734 6 28 28 168 4704
+223	83996 53 495 946 15.957797488238 27.681873458 2 108 108 216 23328
+225	84049 10 0 0 0 0 1 0 0 0 0
+226	84059 10 0 0 0 0 1 0 0 0 0
+227	84069 10 0 0 0 0 1 0 0 0 0
+230	84079 55 493 945 15.950692105107 27.61294183787 2 100 100 200 20000
+8	84134 5834 1457 1457 0.1 42.873340241427 429 0 0 0 0
+10	89968 6263 1457 1457 0.1 42.873340241427 429 0 0 0 0
+72	96231 6263 1457 1457 0.1 42.873340241427 429 0 0 0 0
+74	102494 6263 1457 1457 0.1 42.873340241427 429 0 0 0 0
+89	108757 3330 1457 1457 20.6 42.873340241427 224 0 5120 5120 26214400
+91	112087 3330 1457 1457 20.6 42.873340241427 224 0 5120 5120 26214400
+153	115417 6692 1457 1457 0.1 42.873340241427 429 0 0 0 0
+165	122109 2100 1457 1457 29.8 42.873340241427 132 0 5120 5120 26214400
+167	124209 2100 1457 1457 29.8 42.873340241427 132 0 5120 5120 26214400
+229	126309 6692 1457 1457 0.1 42.873340241427 429 0 0 0 0
+
