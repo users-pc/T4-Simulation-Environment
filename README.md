@@ -1,7 +1,7 @@
 # Ad-hoc-Simulation-Environment (T4)
 **Authors:** Rayan Ben Tanfous, Ilhan Kapcik, Daniel Yu
 
-![Mesh Network](https://upload.wikimedia.org/wikipedia/commons/1/1a/Freifunk_mesh_cloud.png)
+<img width="890" height="503" alt="t4-simulation" src="https://github.com/user-attachments/assets/b7a016d4-739d-4e19-a7ce-547e598c6064" />
 
 ## Project Overview
 
