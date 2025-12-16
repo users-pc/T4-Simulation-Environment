@@ -1,21 +1,22 @@
-## Architectural Documentation  
-### Simulation von Python-/Docker-Knoten über eine OMNeT++-basierte Netzwerkumgebung
+# Architectural Documentation  
+## Simulation of Python/Docker Nodes over an OMNeT++-Based Network Environment
 
-## 1. Ziel der Architektur
-Das System dient dazu zu testen, wie verteilte Anwendungen sich in dynamischen Netzwerken mit hoher  Paketverlusten, Verzögerungen und limitierter Bandbreite verhalten.  
-Python-Skripte bilden Applikationsknoten, während OMNeT++ die Netzwerkstruktur simuliert.
+## 1. Goal of Architecture 
+The goal of this system is to evaluate how distributed applications behave in dynamic network environments with high packet loss, latency, and limited bandwidth.
+Python scripts represent application-level nodes, while OMNeT++ is used to simulate the underlying network topology, routing behavior, and network dynamics.
+## 2. Systemoverview
 
-## 2. Systemüberblick
-
-### A) Application Layer – Python-Skripte 
-- Jeder Knoten hat eine IP im Applikationsnetz: **192.168.17.x**
-- Öffnet einen Socket auf **Port 5000**
-- Sendet periodisch Daten an andere Knoten
-- Empfängt Nachrichten vom OMNeT++-Host
-
+### A) Application Layer – Python-Scripts
+- Jeder Knoten hat eine IP im Applikationsnetz: 192.168.17.x
+- Five Docker containers with IP addresses: 192.168.17.x
+- Each container:
+  - Opens a socket on port 5000
+  - Runs a Python script
+  - Periodically sends data to other nodes
+  - Receives application-level messages
 ### B) Simulation Layer – OMNeT++ Hosts
-- Jeder Host hat eine IP: **192.168.18.x**
-- Öffnet **fünf Ports**: 5001–5005
+- Jeder Host hat eine IP: 192.168.18.x
+- Öffnet fünf Ports: 5001–5005
 - Empfängt, prüft und leitet Pakete weiter
 - Simuliert ein dynamisches Ad-hoc/MANET-Netz
 
@@ -63,6 +64,7 @@ OMNeT++/INET kann solche Protokolle unterstützen.
 
 ## 9. Zusammenfassung
 Die Architektur verbindet reale Python-Anwendungen mit einer simulationsbasierten Netzwerkumgebung. OMNeT++ übernimmt Routing, Nachbarschaftsbeziehungen und dynamische Topologie. Python kümmert sich um die Anwendung und erzeugt echten Datenverkehr.
+
 
 
 
