@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  sim:
+    build: .
+    network_mode: host
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_NICE
+    devices:
+      - /dev/net/tun
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    command: ["./simulations/run"]
+    environment:
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+    stdin_open: true
+    tty: true
