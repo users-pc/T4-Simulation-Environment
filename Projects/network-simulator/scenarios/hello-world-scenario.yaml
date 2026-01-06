@@ -1,0 +1,9 @@
+services:
+  ns-3:
+    container_name: ns-3
+    build:
+      dockerfile: images/ns-3.Dockerfile
+      context: .
+    volumes:
+      - ./src/first.cc:/usr/local/ns-allinone-3.37/ns-3.37/scratch/first.cc
+    command: sh -c "./ns3 run scratch/first.cc"
