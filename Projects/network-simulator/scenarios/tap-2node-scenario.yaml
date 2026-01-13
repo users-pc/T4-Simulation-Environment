@@ -1,0 +1,37 @@
+services:
+  left:
+    image: "ubuntu-net"
+    build:
+      dockerfile: images/ueDevice.Dockerfile
+      context: .
+    container_name: left
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+  right:
+    tty: true
+    image: "ubuntu-net"
+    build:
+      dockerfile: images/ueDevice.Dockerfile
+      context: .
+    container_name: right
+    network_mode: "none"
+    depends_on:
+      - ns_3
+      - left
+  ns_3:
+    image: "ns3-lena"
+    build:
+      dockerfile: images/ns-3.Dockerfile
+      context: .
+    container_name: ns-3
+    network_mode: "host"
+    volumes:
+      - ./src/tap-csma-scenario.cc:/usr/local/ns-allinone-3.37/ns-3.37/scratch/tap-csma-scenario.cc
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+

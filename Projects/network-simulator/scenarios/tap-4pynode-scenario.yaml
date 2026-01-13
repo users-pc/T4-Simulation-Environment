@@ -1,0 +1,85 @@
+# TAP-CSMA 4-Node Scenario with Python Peering Nodes
+#
+# Topology:
+#   Node0 ─── Node1 ─── Node2 ─── Node3
+#   tap-0     tap-1     tap-2     tap-3
+#
+# Each node runs the Python peering application that sends
+# "Hello" messages to random peers every 2 seconds.
+#
+# USAGE:
+#   1. sudo ./scripts/tap-4pynode-setup.sh  (creates TAP devices + starts containers)
+#   2. docker exec ns-3 ./ns3 run scratch/tap-csma-line.cc
+
+services:
+  # NS-3 Simulator - provides the network layer
+  ns_3:
+    image: "ns3-lena"
+    build:
+      dockerfile: images/ns-3.Dockerfile
+      context: .
+    container_name: ns-3
+    network_mode: "host"
+    volumes:
+      - ./src/manet-aodv-static.cc:/usr/local/ns-allinone-3.37/ns-3.37/scratch/manet-aodv-static.cc
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+  # Python Peering Nodes - generate traffic via TAP bridges
+  node-0:
+    image: "pynode"
+    build:
+      dockerfile: images/pynode.Dockerfile
+      context: .
+    container_name: node-0
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+    command:
+      - "--peers=10.0.0.2:5000,10.0.0.3:5000,10.0.0.4:5000"
+
+  node-1:
+    image: "pynode"
+    build:
+      dockerfile: images/pynode.Dockerfile
+      context: .
+    container_name: node-1
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+      - node-0
+    command:
+      - "--peers=10.0.0.1:5000,10.0.0.3:5000,10.0.0.4:5000"
+
+  node-2:
+    image: "pynode"
+    build:
+      dockerfile: images/pynode.Dockerfile
+      context: .
+    container_name: node-2
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+      - node-1
+    command:
+      - "--peers=10.0.0.1:5000,10.0.0.2:5000,10.0.0.4:5000"
+
+  node-3:
+    image: "pynode"
+    build:
+      dockerfile: images/pynode.Dockerfile
+      context: .
+    container_name: node-3
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+      - node-2
+    command:
+      - "--peers=10.0.0.1:5000,10.0.0.2:5000,10.0.0.3:5000"

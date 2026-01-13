@@ -1,0 +1,79 @@
+# TAP-CSMA 4-Node Scenario
+#
+# Topology:
+#   Node0 ─── Node1 ─── Node2 ─── Node3
+#   tap-0     tap-1     tap-2     tap-3
+#
+# IMPORTANT: Run these steps in order:
+#   1. sudo ./scripts/tap-4node-setup.sh    # Create TAP devices
+#   2. docker compose -f scenarios/tap-4node-scenario.yaml up
+#   3. Run the NS-3 simulation inside ns-3 container
+#   4. Attach container network namespaces to bridges
+
+services:
+  # NS-3 Simulator - must start first to set up the simulated network
+  ns_3:
+    image: "ns3-lena"
+    build:
+      dockerfile: images/ns-3.Dockerfile
+      context: .
+    container_name: ns-3
+    network_mode: "host"
+    volumes:
+      - ./src/manet-aodv-static.cc:/usr/local/ns-allinone-3.37/ns-3.37/scratch/manet-aodv-static.cc
+    tty: true
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+  # Node 0 - connects via tap-0
+  node-0:
+    image: "ubuntu-net"
+    build:
+      dockerfile: images/ueDevice.Dockerfile
+      context: .
+    container_name: node-0
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+
+  # Node 1 - connects via tap-1
+  node-1:
+    image: "ubuntu-net"
+    build:
+      dockerfile: images/ueDevice.Dockerfile
+      context: .
+    container_name: node-1
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+      - node-0
+
+  # Node 2 - connects via tap-2
+  node-2:
+    image: "ubuntu-net"
+    build:
+      dockerfile: images/ueDevice.Dockerfile
+      context: .
+    container_name: node-2
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+      - node-1
+
+  # Node 3 - connects via tap-3
+  node-3:
+    image: "ubuntu-net"
+    build:
+      dockerfile: images/ueDevice.Dockerfile
+      context: .
+    container_name: node-3
+    network_mode: "none"
+    tty: true
+    depends_on:
+      - ns_3
+      - node-2
