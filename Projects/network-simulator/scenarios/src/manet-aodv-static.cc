@@ -45,14 +45,20 @@ static void PrintStats() {
 
 int main(int argc, char* argv[])
 {
-    double time = 600.0;
+    double time = 60.0;
     bool verbose = false;
     std::string animFile = "manet-aodv-tap.xml";
+    std::string mobility_model = "static";
+    double speed = 5.0;
+    double pause = 2.0;
 
     CommandLine cmd(__FILE__);
     cmd.AddValue("time", "Simulation time in seconds", time);
     cmd.AddValue("verbose", "Enable logging", verbose);
     cmd.AddValue("animFile", "NetAnim output XML file", animFile);
+    cmd.AddValue("mobility", "Mobility model: static, random-waypoint, random-walk", mobility_model);
+    cmd.AddValue("speed", "Max speed in m/s (for mobile models)", speed);
+    cmd.AddValue("pause", "Pause time in seconds (for random-waypoint)", pause);
     cmd.Parse(argc, argv);
 
     if (verbose) {
@@ -66,12 +72,13 @@ int main(int argc, char* argv[])
     GlobalValue::Bind("ChecksumEnabled", BooleanValue(true));
 
     std::cout << "\n=== TAP-AODV-NETANIM: 4-Node MANET ===\n";
+    std::cout << "Mobility: " << mobility_model << " (speed=" << speed << "m/s, pause=" << pause << "s)\n";
 
     // Create nodes
     NodeContainer nodes;
     nodes.Create(4);
 
-    // Configure WiFi (Ad-hoc mode for MANET)
+    // Configure WiFi
     WifiHelper wifi;
     wifi.SetStandard(WIFI_STANDARD_80211a);
     wifi.SetRemoteStationManager("ns3::ConstantRateWifiManager",
@@ -92,16 +99,37 @@ int main(int argc, char* argv[])
 
     NetDeviceContainer devices = wifi.Install(wifiPhy, wifiMac, nodes);
 
-    // Set static positions (2x2 grid, 50m apart)
+    // Configure mobility based on command-line argument
     MobilityHelper mobility;
-    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
 
+    // Initial positions (2x2 grid)
     Ptr<ListPositionAllocator> positionAlloc = CreateObject<ListPositionAllocator>();
     positionAlloc->Add(Vector(0.0, 0.0, 0.0));
     positionAlloc->Add(Vector(50.0, 0.0, 0.0));
     positionAlloc->Add(Vector(0.0, 50.0, 0.0));
     positionAlloc->Add(Vector(60.0, 60.0, 0.0));
     mobility.SetPositionAllocator(positionAlloc);
+
+    // you can definitetly integrate so much more https://www.nsnam.org/docs/models/html/mobility.html
+    if (mobility_model == "random-waypoint") {
+        std::ostringstream speedStr, pauseStr;
+        speedStr << "ns3::UniformRandomVariable[Min=0|Max=" << speed << "]";
+        pauseStr << "ns3::ConstantRandomVariable[Constant=" << pause << "]";
+
+        mobility.SetMobilityModel("ns3::RandomWaypointMobilityModel",
+            "Speed", StringValue(speedStr.str()),
+            "Pause", StringValue(pauseStr.str()),
+            "PositionAllocator", PointerValue(
+                CreateObjectWithAttributes<RandomRectanglePositionAllocator>(
+                    "X", StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"),
+                    "Y", StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"))));
+    } else if (mobility_model == "random-walk") {
+        mobility.SetMobilityModel("ns3::RandomWalk2dMobilityModel",
+            "Bounds", RectangleValue(Rectangle(0, 100, 0, 100)),
+            "Speed", StringValue("ns3::UniformRandomVariable[Min=1|Max=" + std::to_string(speed) + "]"));
+    } else {
+        mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    }
     mobility.Install(nodes);
 
     AodvHelper aodv;
