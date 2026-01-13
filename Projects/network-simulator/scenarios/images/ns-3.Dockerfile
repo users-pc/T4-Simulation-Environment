@@ -3,7 +3,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
 RUN apt update \
-    && apt install git g++ python3 cmake make tar wget libc6-dev sqlite sqlite3 libsqlite3-dev -y \
+    && apt install git g++ python3 cmake make tar wget libc6-dev sqlite sqlite3 libsqlite3-dev vim -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ns-3

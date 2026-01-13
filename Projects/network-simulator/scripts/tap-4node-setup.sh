@@ -9,7 +9,6 @@ select_scenario() {
         exit 1
     fi
 
-    # Find fzf - check common paths
     FZF_CMD=""
     for path in /usr/bin/fzf /usr/local/bin/fzf /home/*/.fzf/bin/fzf; do
         if [ -x "$path" ] 2>/dev/null; then

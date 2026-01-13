@@ -32,6 +32,13 @@ Or specify any 4-node scenario
 ### Usage
 Run `docker exec ns-3 ./ns3 run scratch/tap-csma-scenario.cc` to run the simulation.
 
+
+### Visualization
+
+Run `docker cp ns-3:/usr/local/ns-allinone-3.37/ns-3.37/manet-static.xml .` to copy the XML file to the current directory.
+
+Use the offline animator for ns3
+
 ## Development
 ns-3 development files are available in `src` folder. They are mounted as a volume when `docker compose` is called for the appropiate scenario. **Only perform development on this folder**.
 

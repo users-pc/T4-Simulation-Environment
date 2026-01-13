@@ -20,7 +20,7 @@ services:
     container_name: ns-3
     network_mode: "host"
     volumes:
-      - ./src/tap-csma-line.cc:/usr/local/ns-allinone-3.37/ns-3.37/scratch/tap-csma-line.cc
+      - ./src/manet-aodv-static.cc:/usr/local/ns-allinone-3.37/ns-3.37/scratch/manet-aodv-static.cc
     tty: true
     cap_add:
       - NET_ADMIN
