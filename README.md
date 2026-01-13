@@ -49,23 +49,12 @@ The emulation environment is built on **OMNeT++ (or NS-3)** with the **INET Fram
 
 1. **Open project:**
    ```bash
-   cd Projects/tutorial-tic-toc-extended
+   cd Projects/
    ```
-
-2. **Compile:**
-   - In OMNeT++ IDE: `Project → Build Project`
-
-3. **Start emulation in Omnet:**
-   - Create Tap-Interfaces
-   - Start Docker-Container Env
-   - Select run configuration in `omnetpp.ini`
-   - Run emulation (Run)
-
-3.1 ** Start emulation in NS3 ** 
-   - Create Tap-Interfaces
-   - Start Docker-Container Env 
-   - Run emulation
-
+2. **Read Instructions:**
+   ```bash
+   cat Readme.md
+   ```
 # Info 
 The project is not yet functional and is still under development. Under Projects, we have many tutorials that are not directly related to the problem.  
 
