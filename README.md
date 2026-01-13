@@ -1,4 +1,4 @@
-# Ad-hoc-Simulation-Environment (T4)
+# Ad-hoc-emulation-Environment (T4)
 **Authors:** Rayan Ben Tanfous, Ilhan Kapcik, Daniel Yu
 
 <img width="890" height="503" alt="t4-simulation" src="https://github.com/user-attachments/assets/b7a016d4-739d-4e19-a7ce-547e598c6064" />
@@ -8,49 +8,32 @@
 ### The Problem
 Decentralized applications like peer-to-peer chat systems rely on stable network infrastructure. This project tests whether such applications work reliably in ad hoc networks with high churn, bandwidth limitations, and delays.
 
-**Solution Approach:** A simulation environment that:
+**Solution Approach:** A emulation environment that:
 - Provides network interfaces with assigned IP addresses
 - Simulates data traffic between Docker containers
 - Models realistic network behavior (churn, latency, bandwidth constraints)
 
 ### Architecture
 
-The simulation environment is built on **OMNeT++** with the **INET Framework** and integrates network simulation with real applications (Python scripts, Docker containers):
+The emulation environment is built on **OMNeT++ (or NS-3)** with the **INET Framework** and integrates network emulation with real applications (Python scripts, Docker containers):
 
 ```
 ┌─────────────────────────────────────┐
 │  Docker Container / Python Script   │
 │      (Decentralized Application)    │
 └────────────┬────────────────────────┘
-             │ API / Socket-Interface
+             │ 
+         Tap-Interfaces
              ↓
 ┌─────────────────────────────────────┐
-│    OMNeT++ Simulation Environment   │
+│ OMNeT++ or NS3 Emulation Environment│
 │  - Ad hoc Network (INET Framework)  │
-│  - Socket API for Communication     │
 │  - Simulate Network Effects         │
+│                                     │
 └─────────────────────────────────────┘
              │
-             ↓ Network Simulation
+             ↓ Network emulation
     [Node A] ←→ [Node B] ←→ [Node C]
-```
-
-## Project Structure
-
-```
-Projects/
-├── tutorial-tic-toc-extended/          # Basic Network Simulation
-│   ├── tutorial.ned                    # Network Topology
-│   ├── txc1.cc                         # Node Program
-│   ├── AppPacket.msg                   # Message Format
-│   └── omnetpp.ini                     # Simulation Configuration
-│
-└── tutorial-tic-toc-extended-socket/   # Socket-based Integration
-    ├── tutorial.ned                    # Network with Socket Support
-    ├── txc1.cc                         # Nodes with Socket API
-    ├── AppPacket.msg                   # Application Message Format
-    ├── socket_client.py                # Python Client for Testing
-    └── omnetpp.ini                     # Simulation Configuration
 ```
 
 ## Getting Started
@@ -59,6 +42,8 @@ Projects/
 - OMNeT++ 5.x or higher
 - INET Framework
 - Python 3.x (for client testing)
+- NS3
+- Linux OS (Tap Interfaces)
 
 ### Installation & Execution
 
@@ -70,27 +55,22 @@ Projects/
 2. **Compile:**
    - In OMNeT++ IDE: `Project → Build Project`
 
-3. **Start simulation:**
+3. **Start emulation in Omnet:**
+   - Create Tap-Interfaces
+   - Start Docker-Container Env
    - Select run configuration in `omnetpp.ini`
-   - Run simulation (Run)
+   - Run emulation (Run)
 
-4. **Test with Python client** (Socket variant):
-   ```bash
-   python socket_client.py
-   ```
+3.1 ** Start emulation in NS3 ** 
+   - Create Tap-Interfaces
+   - Start Docker-Container Env 
+   - Run emulation
 
-## Next Steps
-
-- [ ] Extend INET Framework for ad hoc network models
-- [ ] Implement API for external applications
-- [ ] Realize Docker integration
-- [ ] Test network effects (churn, latency, bandwidth)
-- [ ] Evaluate with decentralized applications
+# Info 
+The project is not yet functional and is still under development. Under Projects, we have many tutorials that are not directly related to the problem.  
 
 ## Further Resources
 
 - [OMNeT++ Documentation](https://omnetpp.org/intro/)
 - [INET Framework Guide](http://inet.omnetpp.org/)
-- [Socket Support in INET](https://inet.omnetpp.org/docs/developers-guide/ch-sockets.html)
-- [Documentation](./Documentation/)
-
+- [NS-3](https://www.nsnam.org/)
