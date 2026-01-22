@@ -1,2 +1,40 @@
 *.DS_Store
 .DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Build artifacts
+out/
+build/
+cmake-build-*/
+Makefile.inc
+*.o
+*.d
+*.so
+*.a
+*.dll
+*.lib
+*.exp
+*.pdb
+*.exe
+
+# OMNeT++ / INET generated sources
+*_m.cc
+*_m.h
+*.ned.xml
+
+# Simulation outputs and logs
+**/results/
+*.vec
+*.vci
+*.sca
+*.elog
+*.elog2
+*.anf
+*.anf2
+*.out
+*.log
+*.tmp

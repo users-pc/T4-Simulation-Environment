@@ -1,0 +1,1 @@
+Dieses Projekt orientiert sich am Video-Streaming-Emulation-Tutorial aus der INET-Dokumentation: https://inet.omnetpp.org/docs/showcases/emulation/videostreaming/doc/index.html. Alle dort beschriebenen Bedingungen für die Emulation müssen erfüllt sein, damit die Szenarien hier genutzt werden können.
