@@ -23,7 +23,8 @@ NS_LOG_COMPONENT_DEFINE("TapAodvNetanim");
 // Traffic counters
 static uint64_t g_bytes[4] = {0}, g_packets[4] = {0};
 
-static void RxCallback(uint32_t idx, Ptr<const Packet> p) {
+static void RxCallback(uint32_t idx, Ptr<const Packet> p)
+{
     g_bytes[idx] += p->GetSize();
     g_packets[idx]++;
 }
@@ -32,10 +33,12 @@ static void Rx1(Ptr<const Packet> p) { RxCallback(1, p); }
 static void Rx2(Ptr<const Packet> p) { RxCallback(2, p); }
 static void Rx3(Ptr<const Packet> p) { RxCallback(3, p); }
 
-static void PrintStats() {
+static void PrintStats()
+{
     std::cout << "\n[" << Simulator::Now().GetSeconds() << "s] Traffic: ";
     uint64_t total = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
+    {
         std::cout << "N" << i << ":" << g_packets[i] << "p/" << g_bytes[i] << "B ";
         total += g_packets[i];
     }
@@ -43,7 +46,7 @@ static void PrintStats() {
     Simulator::Schedule(Seconds(10.0), &PrintStats);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     double time = 60.0;
     bool verbose = false;
@@ -61,7 +64,8 @@ int main(int argc, char* argv[])
     cmd.AddValue("pause", "Pause time in seconds (for random-waypoint)", pause);
     cmd.Parse(argc, argv);
 
-    if (verbose) {
+    if (verbose)
+    {
         LogComponentEnable("TapAodvNetanim", LOG_LEVEL_INFO);
         LogComponentEnable("AodvRoutingProtocol", LOG_LEVEL_DEBUG);
         LogComponentEnable("TapBridge", LOG_LEVEL_INFO);
@@ -82,8 +86,8 @@ int main(int argc, char* argv[])
     WifiHelper wifi;
     wifi.SetStandard(WIFI_STANDARD_80211a);
     wifi.SetRemoteStationManager("ns3::ConstantRateWifiManager",
-                                  "DataMode", StringValue("OfdmRate6Mbps"),
-                                  "ControlMode", StringValue("OfdmRate6Mbps"));
+                                 "DataMode", StringValue("OfdmRate6Mbps"),
+                                 "ControlMode", StringValue("OfdmRate6Mbps"));
 
     YansWifiPhyHelper wifiPhy;
     wifiPhy.Set("TxPowerStart", DoubleValue(20.0));
@@ -111,23 +115,25 @@ int main(int argc, char* argv[])
     mobility.SetPositionAllocator(positionAlloc);
 
     // you can definitetly integrate so much more https://www.nsnam.org/docs/models/html/mobility.html
-    if (mobility_model == "random-waypoint") {
+    if (mobility_model == "random-waypoint")
+    {
         std::ostringstream speedStr, pauseStr;
         speedStr << "ns3::UniformRandomVariable[Min=0|Max=" << speed << "]";
         pauseStr << "ns3::ConstantRandomVariable[Constant=" << pause << "]";
 
         mobility.SetMobilityModel("ns3::RandomWaypointMobilityModel",
-            "Speed", StringValue(speedStr.str()),
-            "Pause", StringValue(pauseStr.str()),
-            "PositionAllocator", PointerValue(
-                CreateObjectWithAttributes<RandomRectanglePositionAllocator>(
-                    "X", StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"),
-                    "Y", StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"))));
-    } else if (mobility_model == "random-walk") {
+                                  "Speed", StringValue(speedStr.str()),
+                                  "Pause", StringValue(pauseStr.str()),
+                                  "PositionAllocator", PointerValue(CreateObjectWithAttributes<RandomRectanglePositionAllocator>("X", StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"), "Y", StringValue("ns3::UniformRandomVariable[Min=0|Max=100]"))));
+    }
+    else if (mobility_model == "random-walk")
+    {
         mobility.SetMobilityModel("ns3::RandomWalk2dMobilityModel",
-            "Bounds", RectangleValue(Rectangle(0, 100, 0, 100)),
-            "Speed", StringValue("ns3::UniformRandomVariable[Min=1|Max=" + std::to_string(speed) + "]"));
-    } else {
+                                  "Bounds", RectangleValue(Rectangle(0, 100, 0, 100)),
+                                  "Speed", StringValue("ns3::UniformRandomVariable[Min=1|Max=" + std::to_string(speed) + "]"));
+    }
+    else
+    {
         mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
     }
     mobility.Install(nodes);
@@ -140,7 +146,8 @@ int main(int argc, char* argv[])
     address.SetBase("10.0.0.0", "255.255.255.0");
     Ipv4InterfaceContainer interfaces = address.Assign(devices);
 
-    for (uint32_t i = 0; i < 4; i++) {
+    for (uint32_t i = 0; i < 4; i++)
+    {
         std::cout << "Node " << i << ": " << interfaces.GetAddress(i) << "\n";
     }
 
@@ -156,25 +163,28 @@ int main(int argc, char* argv[])
     // TAP bridges - UseLocal mode for Layer 3 routing with IP stack
     TapBridgeHelper tapBridge;
     tapBridge.SetAttribute("Mode", StringValue("UseLocal"));
-    const char* taps[] = {"tap-0", "tap-1", "tap-2", "tap-3"};
-    for (uint32_t i = 0; i < 4; i++) {
+    const char *taps[] = {"tap-0", "tap-1", "tap-2", "tap-3"};
+    for (uint32_t i = 0; i < 4; i++)
+    {
         tapBridge.SetAttribute("DeviceName", StringValue(taps[i]));
         tapBridge.Install(nodes.Get(i), devices.Get(i));
         std::cout << "TAP: " << taps[i] << " -> Node " << i << "\n";
     }
 
     // Setup NetAnim visualization
+    // https://www.nsnam.org/docs/release/3.18/doxygen/classns3_1_1_animation_interface.html
     AnimationInterface anim(animFile);
     anim.SetMaxPktsPerTraceFile(1000000);
     anim.EnablePacketMetadata(true);
     anim.EnableIpv4L3ProtocolCounters(Seconds(0), Seconds(time));
 
     // Set node descriptions and colors for NetAnim
-    for (uint32_t i = 0; i < nodes.GetN(); i++) {
+    for (uint32_t i = 0; i < nodes.GetN(); i++)
+    {
         std::ostringstream oss;
         oss << "Node" << i << " (" << interfaces.GetAddress(i) << ")";
         anim.UpdateNodeDescription(nodes.Get(i), oss.str());
-        anim.UpdateNodeColor(nodes.Get(i), 0, 128, 255);  // Blue
+        anim.UpdateNodeColor(nodes.Get(i), 0, 128, 255); // Blue
         anim.UpdateNodeSize(nodes.Get(i)->GetId(), 5, 5);
     }
 
@@ -189,7 +199,8 @@ int main(int argc, char* argv[])
 
     // Final stats
     std::cout << "\n=== FINAL STATISTICS ===\n";
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
+    {
         std::cout << "Node " << i << ": " << g_packets[i] << " packets, " << g_bytes[i] << " bytes\n";
     }
 
