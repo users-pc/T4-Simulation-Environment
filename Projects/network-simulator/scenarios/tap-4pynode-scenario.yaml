@@ -37,6 +37,8 @@ services:
     container_name: node-0
     network_mode: "none"
     tty: true
+    volumes:
+      - ./src/main.py:/usr/src/app/main.py
     depends_on:
       - ns_3
     command:
@@ -50,6 +52,8 @@ services:
     container_name: node-1
     network_mode: "none"
     tty: true
+    volumes:
+      - ./src/main.py:/usr/src/app/main.py
     depends_on:
       - ns_3
       - node-0
@@ -64,6 +68,8 @@ services:
     container_name: node-2
     network_mode: "none"
     tty: true
+    volumes:
+      - ./src/main.py:/usr/src/app/main.py
     depends_on:
       - ns_3
       - node-1
@@ -78,6 +84,8 @@ services:
     container_name: node-3
     network_mode: "none"
     tty: true
+    volumes:
+      - ./src/main.py:/usr/src/app/main.py
     depends_on:
       - ns_3
       - node-2
