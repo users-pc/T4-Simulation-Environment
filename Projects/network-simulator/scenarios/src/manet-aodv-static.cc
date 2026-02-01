@@ -20,29 +20,126 @@ using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("TapAodvNetanim");
 
-// Traffic counters
-static uint64_t g_bytes[4] = {0}, g_packets[4] = {0};
+// Traffic counters - separate TX/RX for MAC and IP layers
+static uint64_t g_macRxBytes[4] = {0}, g_macRxPkts[4] = {0};
+static uint64_t g_macTxBytes[4] = {0}, g_macTxPkts[4] = {0};
+static uint64_t g_ipRxBytes[4] = {0}, g_ipRxPkts[4] = {0};
+static uint64_t g_ipTxBytes[4] = {0}, g_ipTxPkts[4] = {0};
+static uint64_t g_ipDropPkts = 0;
+static uint64_t g_phyTxBegin = 0, g_phyTxEnd = 0, g_phyTxDrop = 0;
+static uint64_t g_phyRxBegin = 0, g_phyRxEnd = 0, g_phyRxDrop = 0;
 
-static void RxCallback(uint32_t idx, Ptr<const Packet> p)
+// Drop and PHY callbacks
+static void IpDropCallback(const Ipv4Header &header, Ptr<const Packet> p,
+                           Ipv4L3Protocol::DropReason reason, Ptr<Ipv4> ipv4, uint32_t interface)
 {
-    g_bytes[idx] += p->GetSize();
-    g_packets[idx]++;
+    g_ipDropPkts++;
+    std::cout << "[DROP] IP packet to " << header.GetDestination()
+              << " reason=" << reason << " iface=" << interface << "\n";
 }
-static void Rx0(Ptr<const Packet> p) { RxCallback(0, p); }
-static void Rx1(Ptr<const Packet> p) { RxCallback(1, p); }
-static void Rx2(Ptr<const Packet> p) { RxCallback(2, p); }
-static void Rx3(Ptr<const Packet> p) { RxCallback(3, p); }
+
+static void PhyTxBeginCallback(Ptr<const Packet> p, double txPowerW) { g_phyTxBegin++; }
+static void PhyTxEndCallback(Ptr<const Packet> p) { g_phyTxEnd++; }
+static void PhyTxDropCallback(Ptr<const Packet> p) { g_phyTxDrop++; std::cout << "[DROP] PHY TX\n"; }
+static void PhyRxBeginCallback(Ptr<const Packet> p, RxPowerWattPerChannelBand rxPowersW) { g_phyRxBegin++; }
+static void PhyRxEndCallback(Ptr<const Packet> p) { g_phyRxEnd++; }
+static void PhyRxDropCallback(Ptr<const Packet> p, WifiPhyRxfailureReason reason) {
+    g_phyRxDrop++;
+    std::cout << "[DROP] PHY RX reason=" << reason << " (";
+    switch(reason) {
+        case UNSUPPORTED_SETTINGS: std::cout << "UNSUPPORTED_SETTINGS"; break;
+        case CHANNEL_SWITCHING: std::cout << "CHANNEL_SWITCHING"; break;
+        case RXING: std::cout << "RXING"; break;
+        case TXING: std::cout << "TXING"; break;
+        case SLEEPING: std::cout << "SLEEPING"; break;
+        case POWERED_OFF: std::cout << "POWERED_OFF"; break;
+        case TRUNCATED_TX: std::cout << "TRUNCATED_TX"; break;
+        case BUSY_DECODING_PREAMBLE: std::cout << "BUSY_DECODING_PREAMBLE"; break;
+        case PREAMBLE_DETECT_FAILURE: std::cout << "PREAMBLE_DETECT_FAILURE"; break;
+        case RECEPTION_ABORTED_BY_TX: std::cout << "RECEPTION_ABORTED_BY_TX"; break;
+        case L_SIG_FAILURE: std::cout << "L_SIG_FAILURE"; break;
+        case HT_SIG_FAILURE: std::cout << "HT_SIG_FAILURE"; break;
+        case SIG_A_FAILURE: std::cout << "SIG_A_FAILURE"; break;
+        case SIG_B_FAILURE: std::cout << "SIG_B_FAILURE"; break;
+        case PREAMBLE_DETECTION_PACKET_SWITCH: std::cout << "PREAMBLE_DETECTION_PACKET_SWITCH"; break;
+        case FRAME_CAPTURE_PACKET_SWITCH: std::cout << "FRAME_CAPTURE_PACKET_SWITCH"; break;
+        case OBSS_PD_CCA_RESET: std::cout << "OBSS_PD_CCA_RESET"; break;
+        case FILTERED: std::cout << "FILTERED"; break;
+        default: std::cout << "UNKNOWN"; break;
+    }
+    std::cout << ")\n";
+}
+
+// MAC layer callbacks
+static void MacRxCallback(uint32_t idx, Ptr<const Packet> p)
+{
+    g_macRxBytes[idx] += p->GetSize();
+    g_macRxPkts[idx]++;
+    NS_LOG_INFO("MAC RX Node " << idx << ": " << p->GetSize() << " bytes");
+}
+static void MacTxCallback(uint32_t idx, Ptr<const Packet> p)
+{
+    g_macTxBytes[idx] += p->GetSize();
+    g_macTxPkts[idx]++;
+    NS_LOG_INFO("MAC TX Node " << idx << ": " << p->GetSize() << " bytes");
+}
+
+// IP layer callbacks - these capture TAP bridge traffic!
+static void IpRxCallback(Ptr<const Packet> p, Ptr<Ipv4> ipv4, uint32_t interface)
+{
+    uint32_t nodeId = ipv4->GetObject<Node>()->GetId();
+    if (nodeId < 4) {
+        g_ipRxBytes[nodeId] += p->GetSize();
+        g_ipRxPkts[nodeId]++;
+        NS_LOG_INFO("IP RX Node " << nodeId << " iface " << interface << ": " << p->GetSize() << " bytes");
+    }
+}
+static void IpTxCallback(Ptr<const Packet> p, Ptr<Ipv4> ipv4, uint32_t interface)
+{
+    uint32_t nodeId = ipv4->GetObject<Node>()->GetId();
+    if (nodeId < 4) {
+        g_ipTxBytes[nodeId] += p->GetSize();
+        g_ipTxPkts[nodeId]++;
+        NS_LOG_INFO("IP TX Node " << nodeId << " iface " << interface << ": " << p->GetSize() << " bytes");
+    }
+}
+
+// Individual MAC callbacks (required for TraceConnectWithoutContext)
+static void MacRx0(Ptr<const Packet> p) { MacRxCallback(0, p); }
+static void MacRx1(Ptr<const Packet> p) { MacRxCallback(1, p); }
+static void MacRx2(Ptr<const Packet> p) { MacRxCallback(2, p); }
+static void MacRx3(Ptr<const Packet> p) { MacRxCallback(3, p); }
+static void MacTx0(Ptr<const Packet> p) { MacTxCallback(0, p); }
+static void MacTx1(Ptr<const Packet> p) { MacTxCallback(1, p); }
+static void MacTx2(Ptr<const Packet> p) { MacTxCallback(2, p); }
+static void MacTx3(Ptr<const Packet> p) { MacTxCallback(3, p); }
 
 static void PrintStats()
 {
-    std::cout << "\n[" << Simulator::Now().GetSeconds() << "s] Traffic: ";
-    uint64_t total = 0;
+    std::cout << "\n[" << Simulator::Now().GetSeconds() << "s] Traffic Statistics:\n";
+    std::cout << "  MAC Layer (WiFi):\n";
+    uint64_t totalMacTx = 0, totalMacRx = 0;
     for (int i = 0; i < 4; i++)
     {
-        std::cout << "N" << i << ":" << g_packets[i] << "p/" << g_bytes[i] << "B ";
-        total += g_packets[i];
+        std::cout << "    Node" << i << ": TX=" << g_macTxPkts[i] << "pkts/" << g_macTxBytes[i] << "B"
+                  << " RX=" << g_macRxPkts[i] << "pkts/" << g_macRxBytes[i] << "B\n";
+        totalMacTx += g_macTxPkts[i];
+        totalMacRx += g_macRxPkts[i];
     }
-    std::cout << "| Total:" << total << " packets\n";
+    std::cout << "  IP Layer (includes TAP traffic):\n";
+    uint64_t totalIpTx = 0, totalIpRx = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        std::cout << "    Node" << i << ": TX=" << g_ipTxPkts[i] << "pkts/" << g_ipTxBytes[i] << "B"
+                  << " RX=" << g_ipRxPkts[i] << "pkts/" << g_ipRxBytes[i] << "B\n";
+        totalIpTx += g_ipTxPkts[i];
+        totalIpRx += g_ipRxPkts[i];
+    }
+    std::cout << "  Totals: MAC TX=" << totalMacTx << " RX=" << totalMacRx
+              << " | IP TX=" << totalIpTx << " RX=" << totalIpRx << "\n";
+    std::cout << "  PHY: TxBegin=" << g_phyTxBegin << " TxEnd=" << g_phyTxEnd << " TxDrop=" << g_phyTxDrop
+              << " | RxBegin=" << g_phyRxBegin << " RxEnd=" << g_phyRxEnd << " RxDrop=" << g_phyRxDrop << "\n";
+    std::cout << "  Drops: IP=" << g_ipDropPkts << "\n";
     Simulator::Schedule(Seconds(10.0), &PrintStats);
 }
 
@@ -154,11 +251,48 @@ int main(int argc, char *argv[])
     // Enable PCAP tracing
     wifiPhy.EnablePcapAll("/tmp/aodv-tap");
 
-    // Traffic monitoring
-    devices.Get(0)->TraceConnectWithoutContext("MacRx", MakeCallback(&Rx0));
-    devices.Get(1)->TraceConnectWithoutContext("MacRx", MakeCallback(&Rx1));
-    devices.Get(2)->TraceConnectWithoutContext("MacRx", MakeCallback(&Rx2));
-    devices.Get(3)->TraceConnectWithoutContext("MacRx", MakeCallback(&Rx3));
+    // Traffic monitoring - MAC layer (WiFi TX/RX) using Config paths
+    Config::ConnectWithoutContext("/NodeList/0/DeviceList/*/$ns3::WifiNetDevice/Mac/MacRx",
+        MakeCallback(&MacRx0));
+    Config::ConnectWithoutContext("/NodeList/1/DeviceList/*/$ns3::WifiNetDevice/Mac/MacRx",
+        MakeCallback(&MacRx1));
+    Config::ConnectWithoutContext("/NodeList/2/DeviceList/*/$ns3::WifiNetDevice/Mac/MacRx",
+        MakeCallback(&MacRx2));
+    Config::ConnectWithoutContext("/NodeList/3/DeviceList/*/$ns3::WifiNetDevice/Mac/MacRx",
+        MakeCallback(&MacRx3));
+    Config::ConnectWithoutContext("/NodeList/0/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTx",
+        MakeCallback(&MacTx0));
+    Config::ConnectWithoutContext("/NodeList/1/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTx",
+        MakeCallback(&MacTx1));
+    Config::ConnectWithoutContext("/NodeList/2/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTx",
+        MakeCallback(&MacTx2));
+    Config::ConnectWithoutContext("/NodeList/3/DeviceList/*/$ns3::WifiNetDevice/Mac/MacTx",
+        MakeCallback(&MacTx3));
+
+    // Traffic monitoring - IP layer (captures TAP bridge traffic!)
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        Ptr<Ipv4> ipv4 = nodes.Get(i)->GetObject<Ipv4>();
+        ipv4->TraceConnectWithoutContext("Tx", MakeCallback(&IpTxCallback));
+        ipv4->TraceConnectWithoutContext("Rx", MakeCallback(&IpRxCallback));
+        ipv4->TraceConnectWithoutContext("Drop", MakeCallback(&IpDropCallback));
+    }
+
+    // PHY layer tracing (to see if packets reach physical layer)
+    Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyTxBegin",
+        MakeCallback(&PhyTxBeginCallback));
+    Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyTxEnd",
+        MakeCallback(&PhyTxEndCallback));
+    Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyTxDrop",
+        MakeCallback(&PhyTxDropCallback));
+    Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxBegin",
+        MakeCallback(&PhyRxBeginCallback));
+    Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxEnd",
+        MakeCallback(&PhyRxEndCallback));
+    Config::ConnectWithoutContext("/NodeList/*/DeviceList/*/$ns3::WifiNetDevice/Phy/PhyRxDrop",
+        MakeCallback(&PhyRxDropCallback));
+
+    std::cout << "IP/PHY layer tracing enabled for debugging\n";
 
     // TAP bridges - UseLocal mode for Layer 3 routing with IP stack
     TapBridgeHelper tapBridge;
@@ -199,10 +333,22 @@ int main(int argc, char *argv[])
 
     // Final stats
     std::cout << "\n=== FINAL STATISTICS ===\n";
+    std::cout << "MAC Layer (WiFi):\n";
     for (int i = 0; i < 4; i++)
     {
-        std::cout << "Node " << i << ": " << g_packets[i] << " packets, " << g_bytes[i] << " bytes\n";
+        std::cout << "  Node " << i << ": TX=" << g_macTxPkts[i] << " pkts/" << g_macTxBytes[i] << " bytes"
+                  << ", RX=" << g_macRxPkts[i] << " pkts/" << g_macRxBytes[i] << " bytes\n";
     }
+    std::cout << "IP Layer (includes TAP traffic):\n";
+    for (int i = 0; i < 4; i++)
+    {
+        std::cout << "  Node " << i << ": TX=" << g_ipTxPkts[i] << " pkts/" << g_ipTxBytes[i] << " bytes"
+                  << ", RX=" << g_ipRxPkts[i] << " pkts/" << g_ipRxBytes[i] << " bytes\n";
+    }
+    std::cout << "PHY Layer:\n";
+    std::cout << "  TX: Begin=" << g_phyTxBegin << " End=" << g_phyTxEnd << " Drop=" << g_phyTxDrop << "\n";
+    std::cout << "  RX: Begin=" << g_phyRxBegin << " End=" << g_phyRxEnd << " Drop=" << g_phyRxDrop << "\n";
+    std::cout << "Drops: IP=" << g_ipDropPkts << "\n";
 
     Simulator::Destroy();
     return 0;
