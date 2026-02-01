@@ -70,7 +70,11 @@ async def send_messages(peers=[],port=5000):
     if len(peers)>0:
       try:
         host=peers[int(random.uniform(0, len(peers)))].split(":")
-        reader, writer = await asyncio.open_connection(host[0], int(host[1]))
+        # Add 5 second timeout to prevent hanging when NS-3 isn't running
+        reader, writer = await asyncio.wait_for(
+            asyncio.open_connection(host[0], int(host[1])),
+            timeout=5.0
+        )
         message = f"Hello from {ip}:{port} to {host[0]}:{host[1]}"
         writer.write(message.encode())
         await writer.drain()
@@ -78,7 +82,13 @@ async def send_messages(peers=[],port=5000):
         await writer.wait_closed()
         print(f"[> {int(asyncio.get_event_loop().time())}]: {message}", flush=True)
       except ConnectionRefusedError:
-        print(f"[!] Could not connect to {host[0]}:{host[1]}", flush=True)
+        print(f"[!] Connection refused: {host[0]}:{host[1]}, retrying...", flush=True)
+      except OSError as e:
+        print(f"[!] Network error to {host[0]}:{host[1]}: {e}, retrying...", flush=True)
+      except asyncio.TimeoutError:
+        print(f"[!] Timeout to {host[0]}:{host[1]}, retrying...", flush=True)
+      except Exception as e:
+        print(f"[!] Error: {type(e).__name__}: {e}, retrying...", flush=True)
     else:
       print("No peers specified", flush=True)
 
