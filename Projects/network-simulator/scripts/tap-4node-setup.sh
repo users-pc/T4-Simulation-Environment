@@ -94,4 +94,4 @@ for i in 0 1 2 3; do
     echo "node-$i: 10.0.0.$((i+1))"
 done
 
-echo "Done. Run: docker exec ns-3 ./ns3 run scratch/tap-csma-line.cc"
+echo "Done. Run: docker exec ns-3 ./ns3 run scratch/deine-simu-file.cc"
